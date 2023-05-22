@@ -13,7 +13,8 @@ function webviewEndpoint() {
         postMessageTarget.postMessage(JSON.stringify(msg), "*")
       },
       addEventListener: (_type, handler) => {
-        const listener = (raw) => {
+        const listener = (event) => {
+          const raw = event.data 
           const data = JSON.parse(raw)
           if ('handleEvent' in handler) {
             handler.handleEvent({ data })
@@ -22,10 +23,8 @@ function webviewEndpoint() {
           }
         }
   
-        eventSource.addEventListener('message', event => {
-          const message = event.data
-          listener(message)
-        }, false);
+        document.addEventListener('message', listener, false); // android
+        window.addEventListener('message', listener, false); // ios
   
         listeners.set(handler, listener)
       },
@@ -33,7 +32,8 @@ function webviewEndpoint() {
       removeEventListener: (_type, handler) => {
         const listener = listeners.get(handler)
         if (!listener) return
-        eventSource.removeEventListener("message", listener)
+        document.removeEventListener("message", listener)
+        window.removeEventListener("message", listener)
         listeners.delete(handler)
       },
       start: () => {
@@ -54,4 +54,6 @@ export const INJECTED_WEBVIEW_COMLINK = `
       originalComlinkExpose(...args);
       window.ReactNativeWebView.postMessage("${ON_COMLINK_EXPOSE}")
     }
+
+    window.Comlink = Comlink;
 `
