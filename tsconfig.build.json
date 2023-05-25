@@ -1,5 +1,5 @@
 
 {
   "extends": "./tsconfig",
-  "exclude": ["example", "dist", "lib", "src/__tests__", "comlink-webview-script"]
+  "exclude": ["example", "dist", "src/__tests__", "comlink-webview-script"]
 }

@@ -25,5 +25,5 @@
     "target": "esnext",
     "verbatimModuleSyntax": true,
   },
-  "exclude": ["dist", "lib", "comlink-webview-script"]
+  "exclude": ["dist", "comlink-webview-script"]
 }

@@ -2,19 +2,19 @@
   "name": "react-native-comlink-webview",
   "version": "0.1.2",
   "description": "React Native library that enables easy communication between a WebView and React Native components using the Comlink framework",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/index.d.ts",
+  "main": "dist/commonjs/index",
+  "module": "dist/module/index",
+  "types": "dist/typescript/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
   "files": [
     "src",
-    "lib",
+    "dist",
     "android",
     "ios",
     "cpp",
     "*.podspec",
-    "!lib/typescript/example",
+    "!dist/typescript/example",
     "!ios/build",
     "!android/build",
     "!android/gradle",
@@ -30,7 +30,7 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepack": "rm -rf lib && rollup -c && bob build",
+    "prepack": "rm -rf dist && rollup -c && bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install"
@@ -95,7 +95,7 @@
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
+      "<rootDir>/dist/"
     ]
   },
   "commitlint": {
@@ -145,7 +145,6 @@
   },
   "eslintIgnore": [
     "node_modules/",
-    "lib/",
     "dist/"
   ],
   "prettier": {
@@ -157,7 +156,7 @@
   },
   "react-native-builder-bob": {
     "source": "src",
-    "output": "lib",
+    "output": "dist",
     "targets": [
       "commonjs",
       "module",

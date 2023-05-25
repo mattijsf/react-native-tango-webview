@@ -5,16 +5,14 @@ import terser from "@rollup/plugin-terser"
 import typescript from "@rollup/plugin-typescript"
 import { sync } from "rimraf"
 
-function config({ format, minify, input, ext = "js", file }) {
-  const isJSON = ext === "json"
-  const dir = `lib/${format}/`
-  const minifierSuffix = minify ? ".min" : ""
+function config({ format, minify, input, file }) {
+  const isJSON = file.endsWith("json")
   const sourcemap = !isJSON
   return {
     input: `./comlink-webview-script/${input}.ts`,
     output: {
       name: "Comlink",
-      file: file || `${dir}/${input}${minifierSuffix}.${ext}`,
+      file: file,
       format,
       inlineDynamicImports: true,
       sourcemap,
@@ -27,7 +25,7 @@ function config({ format, minify, input, ext = "js", file }) {
         compilerOptions: {
           declaration: false,
           sourceMap: true,
-          outDir: "lib",
+          outDir: "dist",
         },
       }),
       minify
@@ -39,7 +37,7 @@ function config({ format, minify, input, ext = "js", file }) {
             },
           })
         : undefined,
-      ext === "json"
+      isJSON
         ? {
             name: "whatever",
             renderChunk(code, chunk) {
@@ -51,11 +49,11 @@ function config({ format, minify, input, ext = "js", file }) {
   }
 }
 
-sync("lib")
+sync("dist")
 
 export default [
-  { input: "comlink-webview-script", format: "umd", minify: false },
-  { input: "comlink-webview-script", format: "umd", minify: true, ext: "mjs" },
+  { input: "comlink-webview-script", format: "umd", minify: false, file: "dist/umd/comlink.js" },
+  { input: "comlink-webview-script", format: "umd", minify: true, file: "dist/umd/comlink.mjs" },
   {
     input: "comlink-webview-script",
     format: "umd",
