@@ -1,7 +1,7 @@
 {
   "name": "react-native-comlink-webview",
   "version": "0.1.1",
-  "description": "test",
+  "description": "React Native library that enables easy communication between a WebView and React Native components using the Comlink framework",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
