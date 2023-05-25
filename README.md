@@ -30,13 +30,15 @@ const HTML = `
   <body style="background-color:lightgrey;">
     <script>
       ${COMLINK_WEBVIEW_SCRIPT}
-      const api = {
+
+      const myApi = {
         sayHi(message) {
           alert(message)
           return true
         },
       };
-      Comlink.expose(api);
+
+      Comlink.expose(myApi);
     </script>
   </body>
 </html>`
@@ -50,14 +52,12 @@ export default function App(): JSX.Element {
     console.log(result) // true
   }, [clientApi])
 
-  const source = useMemo(() => ({ html: HTML }), [])
-
   return (
     <>
-      <ComlinkWebview<ClientAPI>
+      <ComlinkWebview
         style={{ flex: 1 }}
         onRemoteObjectReady={setClientApi}
-        source={source}
+        source={{ html: HTML }}
       />
       <Button disabled={!clientApi} onPress={showMessage} title="Show Message" />
     </>
