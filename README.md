@@ -7,15 +7,63 @@ React Native library that enables easy communication between a WebView and React
 ```sh
 npm install react-native-comlink-webview
 ```
+or
+```sh
+yarn add react-native-comlink-webview
+```
 
 ## Usage
 
-```js
-import { multiply } from 'react-native-comlink-webview';
-
+```tsx
 // ...
+import ComlinkWebview, {
+  COMLINK_WEBVIEW_SCRIPT,
+  type RemoteObject,
+} from "react-native-comlink-webview"
 
-const result = await multiply(3, 7);
+type ClientAPI = {
+  sayHi(message: string): boolean
+}
+
+const HTML = `
+<html>
+  <body style="background-color:lightgrey;">
+    <script>
+      ${COMLINK_WEBVIEW_SCRIPT}
+      const api = {
+        sayHi(message) {
+          alert(message)
+          return true
+        },
+      };
+      Comlink.expose(api);
+    </script>
+  </body>
+</html>`
+
+export default function App(): JSX.Element {
+  const [clientApi, setClientApi] = useState<RemoteObject<ClientAPI>>()
+
+  const showMessage = useCallback(async () => {
+    if (!clientApi) return
+    const result = await clientApi.sayHi("Hello World!")
+    console.log(result) // true
+  }, [clientApi])
+
+  const source = useMemo(() => ({ html: HTML }), [])
+
+  return (
+    <>
+      <ComlinkWebview<ClientAPI>
+        style={{ flex: 1 }}
+        onRemoteObjectReady={setClientApi}
+        source={source}
+      />
+      <Button disabled={!clientApi} onPress={showMessage} title="Show Message" />
+    </>
+  )
+}
+
 ```
 
 ## Contributing
@@ -25,7 +73,3 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)

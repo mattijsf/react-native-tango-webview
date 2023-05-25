@@ -1,78 +1,52 @@
+/* eslint-disable react-native/no-inline-styles */
 import * as React from "react"
-import { useCallback, useRef } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { Button } from "react-native"
 
-import { Alert, Button, StyleSheet } from "react-native"
 import ComlinkWebview, {
   COMLINK_WEBVIEW_SCRIPT,
   type RemoteObject,
 } from "react-native-comlink-webview"
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 
-const HTML = `<!DOCTYPE html>\n
+type ClientAPI = {
+  sayHi(message: string): boolean
+}
+
+const HTML = `
 <html>
-  <head>
-  </head>
-  <body>
-    <h1 id="message">TEST</h1>
+  <body style="background-color:lightgrey;">
     <script>
       ${COMLINK_WEBVIEW_SCRIPT}
       const api = {
-        showMessage(message) {
-          document.getElementById("message").innerHTML = message
+        sayHi(message) {
+          alert(message)
+          return true
         },
-        getMessage() {
-          return "Hi from webview " + new Date().toLocaleString();
-        }
       };
       Comlink.expose(api);
     </script>
   </body>
 </html>`
 
-type ClientAPI = {
-  showMessage(message: string): void
-  getMessage(): string
-}
-
 export default function App(): JSX.Element {
-  const remoteObjectRef = useRef<RemoteObject<ClientAPI>>()
+  const [clientApi, setClientApi] = useState<RemoteObject<ClientAPI>>()
 
-  const onRemoteObjectReady = useCallback((remoteObject: RemoteObject<ClientAPI>) => {
-    remoteObject.showMessage("Hi from onRemoteObjectReady " + new Date().toLocaleString())
-  }, [])
+  const showMessage = useCallback(async () => {
+    if (!clientApi) return
+    const result = await clientApi.sayHi("Hello World!")
+    console.log(result) // true
+  }, [clientApi])
 
-  const showMessage = useCallback(() => {
-    if (!remoteObjectRef.current) return
-    remoteObjectRef.current.showMessage("Hi from native button " + new Date().toLocaleString())
-  }, [])
-
-  const getMessage = useCallback(async () => {
-    if (!remoteObjectRef.current) return
-    const message = await remoteObjectRef.current.getMessage()
-    Alert.alert(message)
-  }, [])
+  const source = useMemo(() => ({ html: HTML }), [])
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <ComlinkWebview
-          style={styles.webview}
-          onRemoteObjectReady={onRemoteObjectReady}
-          remoteObjectRef={remoteObjectRef}
-          source={{ html: HTML }}
-        />
-        <Button onPress={showMessage} title="Show Message" />
-        <Button onPress={getMessage} title="Get Message" />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <>
+      <ComlinkWebview<ClientAPI>
+        style={{ flex: 1 }}
+        onRemoteObjectReady={setClientApi}
+        source={source}
+      />
+      <Button disabled={!clientApi} onPress={showMessage} title="Show Message" />
+    </>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  webview: {
-    flex: 1,
-  },
-})

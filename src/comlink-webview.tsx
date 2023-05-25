@@ -12,7 +12,7 @@ type MessageListener = (message: string) => void
 export type RemoteObject<T> = Comlink.Remote<T>
 
 export type ComlinkWebviewProps<T> = {
-  onRemoteObjectReady: (remoteObject: RemoteObject<T>) => void
+  onRemoteObjectReady?: (remoteObject: RemoteObject<T>) => void
   remoteObjectRef?: MutableRefObject<RemoteObject<T> | undefined>
 } & WebViewProps
 
@@ -47,7 +47,7 @@ const ComlinkWebview = <T,>({
       removeEventListener: el => messageEventListeners.delete(el),
     })
 
-    const wrappedObj = Comlink.wrap<T>(endpoint)
+    const wrappedObj = Comlink.wrap<T>(endpoint, {})
     if (remoteObjectRef) {
       remoteObjectRef.current = wrappedObj
     }
