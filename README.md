@@ -1,6 +1,6 @@
 # react-native-comlink-webview
 
-React Native library that enables easy communication between a WebView and React Native components using the Comlink framework. It simplifies the integration of WebView into React Native applications and facilitates data exchange and method invocation between the two environments.
+React Native library that enables easy communication between a WebView and React Native components using the [Comlink](https://github.com/GoogleChromeLabs/comlink) framework. It simplifies the integration of WebView into React Native applications and facilitates data exchange and method invocation between the two environments.
 
 ## Installation
 
