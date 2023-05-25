@@ -1,5 +1,5 @@
 import * as Comlink from "comlink"
-import React, { useCallback, useMemo, type MutableRefObject } from "react"
+import React, { useCallback, type MutableRefObject } from "react"
 import { WebView, type WebViewMessageEvent, type WebViewProps } from "react-native-webview"
 import { stringEndpoint } from "./comlink-string-endpoint"
 import _COMLINK_WEBVIEW_SCRIPT from "./comlink-webview-script.json"
@@ -23,20 +23,6 @@ const ComlinkWebview = <T,>({
 }: ComlinkWebviewProps<T>): JSX.Element => {
   const webViewRef = React.useRef<WebView>(null)
   const messageEventListeners = React.useRef(new Set<MessageListener>()).current
-
-  /**
-   * Note that this is not yet 100% guaranteed to work on Android
-   * See warning at https://github.com/react-native-webview/react-native-webview/blob/master/docs/Guide.md#the-injectedjavascriptbeforecontentloaded-prop
-   * and issue at https://github.com/react-native-webview/react-native-webview/issues/1609
-   * */
-  const injectedJavaScriptBeforeContentLoaded = useMemo(
-    () => `
-    ${COMLINK_WEBVIEW_SCRIPT}
-    ${webViewProps.injectedJavaScriptBeforeContentLoaded ?? ""}
-    true;
-  `,
-    [webViewProps.injectedJavaScriptBeforeContentLoaded]
-  )
 
   const onComlinkExpose = useCallback(() => {
     const endpoint = stringEndpoint({
@@ -67,16 +53,7 @@ const ComlinkWebview = <T,>({
     [messageEventListeners, onComlinkExpose, webViewProps]
   )
 
-  return (
-    <WebView
-      {...webViewProps}
-      ref={webViewRef}
-      javaScriptEnabled
-      injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
-      injectedJavaScriptBeforeContentLoadedForMainFrameOnly
-      onMessage={onMessage}
-    />
-  )
+  return <WebView {...webViewProps} ref={webViewRef} javaScriptEnabled onMessage={onMessage} />
 }
 
 export default ComlinkWebview
