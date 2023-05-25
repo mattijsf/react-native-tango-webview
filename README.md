@@ -29,7 +29,7 @@ const HTML = `
 <html>
   <body style="background-color:lightgrey;">
     <script>
-      ${COMLINK_WEBVIEW_SCRIPT}
+      ${COMLINK_WEBVIEW_SCRIPT} <!-- OR: <script src="https://unpkg.com/react-native-comlink-webview/dist/umd/comlink.mjs"></script> -->
 
       const myApi = {
         sayHi(message) {
