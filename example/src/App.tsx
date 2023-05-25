@@ -1,45 +1,70 @@
 import * as React from "react"
 import { useCallback, useRef } from "react"
 
-import { SafeAreaView, StyleSheet } from "react-native"
-import ComlinkWebview, { type RemoteObject } from "react-native-comlink-webview"
+import { Alert, Button, StyleSheet } from "react-native"
+import ComlinkWebview, {
+  COMLINK_WEBVIEW_SCRIPT,
+  type RemoteObject,
+} from "react-native-comlink-webview"
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 
 const HTML = `<!DOCTYPE html>\n
 <html>
+  <head>
+  </head>
   <body>
+    <h1 id="message">TEST</h1>
     <script>
-      const objApi = {
-        showAlert(message) {
-          document.write("<h1>" + message + "</h1>")
+      ${COMLINK_WEBVIEW_SCRIPT}
+      const api = {
+        showMessage(message) {
+          document.getElementById("message").innerHTML = message
         },
+        getMessage() {
+          return "Hi from webview " + new Date().toLocaleString();
+        }
       };
-
-      Comlink.expose(objApi);
+      Comlink.expose(api);
     </script>
   </body>
 </html>`
 
 type ClientAPI = {
-  add(a: number, b: number): number
-  showAlert(message: string): void
+  showMessage(message: string): void
+  getMessage(): string
 }
 
 export default function App(): JSX.Element {
   const remoteObjectRef = useRef<RemoteObject<ClientAPI>>()
 
   const onRemoteObjectReady = useCallback((remoteObject: RemoteObject<ClientAPI>) => {
-    remoteObject.showAlert("Hi from native " + new Date().toLocaleString())
+    remoteObject.showMessage("Hi from onRemoteObjectReady " + new Date().toLocaleString())
+  }, [])
+
+  const showMessage = useCallback(() => {
+    if (!remoteObjectRef.current) return
+    remoteObjectRef.current.showMessage("Hi from native button " + new Date().toLocaleString())
+  }, [])
+
+  const getMessage = useCallback(async () => {
+    if (!remoteObjectRef.current) return
+    const message = await remoteObjectRef.current.getMessage()
+    Alert.alert(message)
   }, [])
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ComlinkWebview
-        style={styles.webview}
-        onRemoteObjectReady={onRemoteObjectReady}
-        remoteObjectRef={remoteObjectRef}
-        source={{ html: HTML }}
-      />
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <ComlinkWebview
+          style={styles.webview}
+          onRemoteObjectReady={onRemoteObjectReady}
+          remoteObjectRef={remoteObjectRef}
+          source={{ html: HTML }}
+        />
+        <Button onPress={showMessage} title="Show Message" />
+        <Button onPress={getMessage} title="Get Message" />
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 

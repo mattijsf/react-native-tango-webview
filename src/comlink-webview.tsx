@@ -1,8 +1,12 @@
+import * as Comlink from "comlink"
 import React, { useCallback, useMemo, type MutableRefObject } from "react"
 import { WebView, type WebViewMessageEvent, type WebViewProps } from "react-native-webview"
-import * as Comlink from "./comlink/comlink"
-import { INJECTED_WEBVIEW_COMLINK, ON_COMLINK_EXPOSE } from "./injected-webview-comlink"
-import { stringEndpoint } from "./string-endpoint"
+import { stringEndpoint } from "./comlink-string-endpoint"
+import _COMLINK_WEBVIEW_SCRIPT from "./comlink-webview-script.json"
+
+const ON_COMLINK_EXPOSE = "onComlinkExpose"
+
+export const COMLINK_WEBVIEW_SCRIPT: string = _COMLINK_WEBVIEW_SCRIPT
 
 type MessageListener = (message: string) => void
 export type RemoteObject<T> = Comlink.Remote<T>
@@ -20,9 +24,14 @@ const ComlinkWebview = <T,>({
   const webViewRef = React.useRef<WebView>(null)
   const messageEventListeners = React.useRef(new Set<MessageListener>()).current
 
+  /**
+   * Note that this is not yet 100% guaranteed to work on Android
+   * See warning at https://github.com/react-native-webview/react-native-webview/blob/master/docs/Guide.md#the-injectedjavascriptbeforecontentloaded-prop
+   * and issue at https://github.com/react-native-webview/react-native-webview/issues/1609
+   * */
   const injectedJavaScriptBeforeContentLoaded = useMemo(
     () => `
-    ${INJECTED_WEBVIEW_COMLINK}
+    ${COMLINK_WEBVIEW_SCRIPT}
     ${webViewProps.injectedJavaScriptBeforeContentLoaded ?? ""}
     true;
   `,
@@ -31,7 +40,9 @@ const ComlinkWebview = <T,>({
 
   const onComlinkExpose = useCallback(() => {
     const endpoint = stringEndpoint({
-      postMessage: msg => webViewRef.current?.postMessage(msg),
+      postMessage: msg => {
+        webViewRef.current?.postMessage(msg)
+      },
       addEventListener: el => messageEventListeners.add(el),
       removeEventListener: el => messageEventListeners.delete(el),
     })
@@ -46,7 +57,6 @@ const ComlinkWebview = <T,>({
   const onMessage = useCallback(
     (event: WebViewMessageEvent) => {
       const data = event.nativeEvent.data ?? ""
-
       if (data === ON_COMLINK_EXPOSE) {
         onComlinkExpose?.()
         return

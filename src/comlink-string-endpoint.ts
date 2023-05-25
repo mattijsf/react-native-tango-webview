@@ -1,4 +1,4 @@
-import { type Endpoint } from "./comlink/protocol"
+import type { Endpoint } from "comlink"
 
 interface StringEndpoint {
   postMessage(message: string): void

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "module": "esnext",
+      "target": "ES2015",
+      "lib": ["esnext", "DOM"],
+      "composite": false,
+      "removeComments": true,
+      "declaration": false,
+      "preserveConstEnums": true,
+      "sourceMap": true,
+      "skipLibCheck":true,
+    },
+    "files": ["./comlink-webview-script/comlink-webview-script.ts"]
+  }
