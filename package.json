@@ -1,6 +1,6 @@
 {
   "name": "react-native-tango-webview",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "React Native library that enables easy communication between a WebView and React Native components using tango-rpc",
   "main": "dist/commonjs/index",
   "module": "dist/module/index",
