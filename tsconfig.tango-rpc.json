@@ -10,5 +10,5 @@
       "sourceMap": true,
       "skipLibCheck":true,
     },
-    "files": ["./tango-rpc-webview-script/tango-rpc-webview-script.ts"]
+    "files": ["./src/tango-rpc-webview-script.ts"]
   }

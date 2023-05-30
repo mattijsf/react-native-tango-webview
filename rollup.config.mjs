@@ -9,7 +9,7 @@ function config({ format, minify, input, file }) {
   const isJSON = file.endsWith("json")
   const sourcemap = !isJSON
   return {
-    input: `./tango-rpc-webview-script/${input}.ts`,
+    input: `./src/${input}.ts`,
     output: {
       name: "TangoRPC",
       file: file,

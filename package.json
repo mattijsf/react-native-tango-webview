@@ -35,7 +35,7 @@
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install",
     "build-webview-script": "rollup -c rollup.config.mjs",
-    "watch-webview-script": "npx nodemon -i dist -w tango-rpc-webview-script/tango-rpc-webview-script.ts rollup -c rollup.config.mjs"
+    "watch-webview-script": "npx nodemon -i dist -w src/tango-rpc-webview-script.ts rollup -c rollup.config.mjs"
   },
   "keywords": [
     "react-native",

@@ -25,5 +25,5 @@
     "target": "esnext",
     "verbatimModuleSyntax": true,
   },
-  "exclude": ["dist", "tango-rpc-webview-script"]
+  "exclude": ["dist"]
 }
