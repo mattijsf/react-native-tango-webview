@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "react-native-comlink-webview": ["./src/index"]
+      "react-native-tango-webview": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
@@ -25,5 +25,5 @@
     "target": "esnext",
     "verbatimModuleSyntax": true,
   },
-  "exclude": ["dist", "comlink-webview-script"]
+  "exclude": ["dist", "tango-rpc-webview-script"]
 }

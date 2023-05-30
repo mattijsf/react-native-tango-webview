@@ -2,36 +2,36 @@
 import * as React from "react"
 import { useCallback, useState } from "react"
 import { Button } from "react-native"
-
-import ComlinkWebview, {
-  COMLINK_WEBVIEW_SCRIPT,
-  type RemoteObject,
-} from "react-native-comlink-webview"
+import TangoWebview, { TANGO_RPC_WEBVIEW_SCRIPT } from "react-native-tango-webview"
 
 type ClientAPI = {
-  sayHi(message: string): boolean
+  sayHi(message: string): Promise<boolean>
+  sayHiThroughCallback(cb: (message: string) => void): Promise<void>
 }
 
 const HTML = `
 <html>
   <body style="background-color:lightgrey;">
     <script>
-      ${COMLINK_WEBVIEW_SCRIPT} <!-- OR: <script src="https://unpkg.com/react-native-comlink-webview/dist/umd/comlink.mjs"></script> -->
+      ${TANGO_RPC_WEBVIEW_SCRIPT} <!-- OR: <script src="https://unpkg.com/react-native-tango-webview/dist/umd/tango-rpc.mjs"></script> -->
 
       const myApi = {
         sayHi(message) {
           alert(message)
           return true
         },
+        sayHiThroughCallback(cb) {
+          cb("Hi from web")
+        }
       };
-
-      Comlink.expose(myApi);
+      const server = new TangoRPC.Server(TangoRPC.createWebViewChannel(), myApi)
+      server.onConnect(() => console.log("Server Connected"))
     </script>
   </body>
 </html>`
 
 export default function App(): JSX.Element {
-  const [clientApi, setClientApi] = useState<RemoteObject<ClientAPI>>()
+  const [clientApi, setClientApi] = useState<ClientAPI>()
 
   const showMessage = useCallback(async () => {
     if (!clientApi) return
@@ -39,14 +39,16 @@ export default function App(): JSX.Element {
     console.log(result) // true
   }, [clientApi])
 
+  const performCallback = useCallback(async () => {
+    if (!clientApi) return
+    await clientApi.sayHiThroughCallback(message => console.log("Callback:" + message))
+  }, [clientApi])
+
   return (
     <>
-      <ComlinkWebview
-        style={{ flex: 1 }}
-        onRemoteObjectReady={setClientApi}
-        source={{ html: HTML }}
-      />
-      <Button disabled={!clientApi} onPress={showMessage} title="Show Message" />
+      <TangoWebview style={{ flex: 1 }} onConnect={setClientApi} source={{ html: HTML }} />
+      <Button disabled={!clientApi} onPress={showMessage} title="sayHi" />
+      <Button disabled={!clientApi} onPress={performCallback} title="doCallback" />
     </>
   )
 }

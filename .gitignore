@@ -74,3 +74,6 @@ dist/
 .rollup.cache
 
 *.tgz
+
+package-lock.json
+yarn.lock

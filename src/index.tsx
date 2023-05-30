@@ -1,5 +1,5 @@
-import ComlinkWebview from "./comlink-webview"
+import TangoWebview from "./tango-webview"
 
-export * from "./comlink-webview"
+export * from "./tango-webview"
 
-export default ComlinkWebview
+export default TangoWebview

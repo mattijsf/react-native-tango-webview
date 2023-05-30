@@ -1,7 +1,7 @@
 {
-  "name": "react-native-comlink-webview",
+  "name": "react-native-tango-webview",
   "version": "0.2.0",
-  "description": "React Native library that enables easy communication between a WebView and React Native components using the Comlink framework",
+  "description": "React Native library that enables easy communication between a WebView and React Native components using the tang-rpc library",
   "main": "dist/commonjs/index",
   "module": "dist/module/index",
   "types": "dist/typescript/index.d.ts",
@@ -33,20 +33,22 @@
     "prepack": "rm -rf dist && rollup -c && bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn install"
+    "bootstrap": "yarn example && yarn install",
+    "build-webview-script": "rollup -c rollup.config.mjs",
+    "watch-webview-script": "npx nodemon -i dist -w tango-rpc-webview-script/tango-rpc-webview-script.ts rollup -c rollup.config.mjs"
   },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
-  "repository": "https://github.com/mattijsf/react-native-comlink-webview",
+  "repository": "https://github.com/mattijsf/react-native-tango-webview",
   "author": "Mattijs Fuijkschot <mattijs@fuijkschot.nl> (https://github.com/mattijsf)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mattijsf/react-native-comlink-webview/issues"
+    "url": "https://github.com/mattijsf/react-native-tango-webview/issues"
   },
-  "homepage": "https://github.com/mattijsf/react-native-comlink-webview#readme",
+  "homepage": "https://github.com/mattijsf/react-native-tango-webview#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -169,6 +171,6 @@
     ]
   },
   "dependencies": {
-    "comlink": "^4.4.1"
+    "tango-rpc": "^1.0.0"
   }
 }

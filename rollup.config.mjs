@@ -9,9 +9,9 @@ function config({ format, minify, input, file }) {
   const isJSON = file.endsWith("json")
   const sourcemap = !isJSON
   return {
-    input: `./comlink-webview-script/${input}.ts`,
+    input: `./tango-rpc-webview-script/${input}.ts`,
     output: {
-      name: "Comlink",
+      name: "TangoRPC",
       file: file,
       format,
       inlineDynamicImports: true,
@@ -20,7 +20,7 @@ function config({ format, minify, input, file }) {
     plugins: [
       nodeResolve(),
       typescript({
-        tsconfig: "./tsconfig.comlink.json",
+        tsconfig: "./tsconfig.tango-rpc.json",
         outputToFilesystem: true,
         compilerOptions: {
           declaration: false,
@@ -52,13 +52,23 @@ function config({ format, minify, input, file }) {
 sync("dist")
 
 export default [
-  { input: "comlink-webview-script", format: "umd", minify: false, file: "dist/umd/comlink.js" },
-  { input: "comlink-webview-script", format: "umd", minify: true, file: "dist/umd/comlink.mjs" },
   {
-    input: "comlink-webview-script",
+    input: "tango-rpc-webview-script",
+    format: "umd",
+    minify: false,
+    file: "dist/umd/tango-rpc.js",
+  },
+  {
+    input: "tango-rpc-webview-script",
+    format: "umd",
+    minify: true,
+    file: "dist/umd/tango-rpc.mjs",
+  },
+  {
+    input: "tango-rpc-webview-script",
     format: "umd",
     minify: true,
     ext: "json",
-    file: "src/comlink-webview-script.json",
+    file: "src/tango-rpc-webview-script.json",
   },
 ].map(config)
