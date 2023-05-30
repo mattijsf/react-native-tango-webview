@@ -20,7 +20,7 @@ import TangoWebview, { TANGO_RPC_WEBVIEW_SCRIPT } from "react-native-tango-webvi
 
 type ClientAPI = {
   sayHi(message: string): Promise<boolean>
-  doCallback(cb: (message: string) => void): Promise<void>
+  sayHiThroughCallback(cb: (message: string) => void): Promise<void>
 }
 
 const HTML = `
@@ -54,16 +54,16 @@ export default function App(): JSX.Element {
     console.log(result) // true
   }, [clientApi])
 
-  const performCallback = useCallback(async () => {
+  const doCallback = useCallback(async () => {
     if (!clientApi) return
-    await clientApi.doCallback(message => console.log("Callback:" + message))
+    await clientApi.sayHiThroughCallback(message => console.log("Callback:" + message))
   }, [clientApi])
 
   return (
     <>
       <TangoWebview style={{ flex: 1 }} onConnect={setClientApi} source={{ html: HTML }} />
       <Button disabled={!clientApi} onPress={showMessage} title="sayHi" />
-      <Button disabled={!clientApi} onPress={performCallback} title="doCallback" />
+      <Button disabled={!clientApi} onPress={doCallback} title="doCallback" />
     </>
   )
 }
